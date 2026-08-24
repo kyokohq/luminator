@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luminator ODK4 & IPS Suite</title>
+    <title>Kris Transit - Luminator ODK4 & IPS Suite</title>
     <style>
         body {
             background-color: #121212;
@@ -311,6 +311,7 @@
             margin-bottom: 20px;
             width: 100%;
             box-sizing: border-box;
+            align-items: flex-end;
         }
 
         .control-group {
@@ -325,18 +326,36 @@
             color: #aaa;
         }
 
-        input {
+        input, select {
             padding: 8px 12px;
             background: #2d2d2d;
             border: 1px solid #444;
             color: #fff;
             border-radius: 4px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <h2 id="mainHeading">Luminator ODK4 & IPS Suite</h2>
+    <h2 id="mainHeading">Kris Transit Fleet - Luminator ODK4 & IPS Suite</h2>
+
+    <!-- GLOBAL FLEET SELECTOR BAR -->
+    <div style="background: #181818; border: 1px solid #333; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; width: 100%; max-width: 850px; box-sizing: border-box;">
+        <div class="control-group" style="flex: 1;">
+            <label>Target Fleet Bus</label>
+            <select id="globalBusSelect" onchange="handleFleetSelectionChange()">
+                <option value="0712">Bus 0712 (IC CE 2022)</option>
+                <option value="0715">Bus 0715 (Blue Bird Vision)</option>
+                <option value="0720">Bus 0720 (Thomas Built C2)</option>
+                <option value="custom">Enter Custom Fleet ID...</option>
+            </select>
+        </div>
+        <div class="control-group" id="customBusContainer" style="display: none; flex: 1;">
+            <label>Custom Bus ID</label>
+            <input type="text" id="customBusInput" value="0712" placeholder="e.g. 0725">
+        </div>
+    </div>
 
     <!-- IPS PRIVATE PASSWORD GATE -->
     <div id="ipsPasswordGate" class="auth-overlay" style="display:none;">
@@ -361,10 +380,6 @@
         <div id="generatorView" class="view-container active">
             <div class="controls">
                 <div class="control-group">
-                    <label>Bus Number</label>
-                    <input type="text" id="busIdInput" value="0712">
-                </div>
-                <div class="control-group">
                     <label>Route</label>
                     <input type="text" id="leftVal" value="93">
                 </div>
@@ -376,8 +391,8 @@
                     <label>Bottom Text</label>
                     <input type="text" id="bottomVal" value="SYSTEM">
                 </div>
-                <div class="control-group" style="align-self: flex-end;">
-                    <button class="tab-btn" style="background:#ff7700; color:white;" onclick="sendSignData(document.getElementById('leftVal').value, document.getElementById('topVal').value, document.getElementById('bottomVal').value)">Send to Bus</button>
+                <div class="control-group">
+                    <button class="tab-btn" style="background:#ff7700; color:white; height: 38px;" onclick="sendSignData(document.getElementById('leftVal').value, document.getElementById('topVal').value, document.getElementById('bottomVal').value)">Send to Selected Bus</button>
                 </div>
             </div>
         </div>
@@ -456,6 +471,24 @@
     <script>
         let ipsUnlocked = false;
 
+        function getActiveBusId() {
+            const selectVal = document.getElementById('globalBusSelect').value;
+            if (selectVal === 'custom') {
+                return document.getElementById('customBusInput').value.trim() || "0712";
+            }
+            return selectVal;
+        }
+
+        function handleFleetSelectionChange() {
+            const selectVal = document.getElementById('globalBusSelect').value;
+            const customContainer = document.getElementById('customBusContainer');
+            if (selectVal === 'custom') {
+                customContainer.style.display = 'flex';
+            } else {
+                customContainer.style.display = 'none';
+            }
+        }
+
         function switchView(viewName) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
@@ -509,7 +542,7 @@
             "93": { route: "93", top: "KRIS TRANSIT", bottom: "SYSTEM" },
             "04": { route: "4", top: "MARKETPLACE", bottom: "FREE SHUTTLE" },
             "05": { route: "5", top: "UPPER VILLAGE", bottom: "BENCHLANDS SHUTTLE" },
-            "06": { route: "6", top: "TAPLEY'S", bottom: "BLUEBERRY" },
+            "06": { route: "6", top: "TAPLEYS", bottom: "BLUEBERRY" },
             "07": { route: "7", top: "STAFF", bottom: "HOUSING" },
             "08": { route: "8", top: "LOST LAKE", bottom: "FREE SHUTTLE" },
             "101": { route: "10", top: "CHEAKAMUS", bottom: "VALLEY EXPRESS" },
@@ -742,7 +775,7 @@
         }
 
         async function sendSignData(rt, top, bot) {
-            const busId = document.getElementById('busIdInput').value.trim() || "0712";
+            const busId = getActiveBusId();
             const payload = { busId: busId, route: rt, top: top, bottom: bot };
             try {
                 await fetch('https://luminator-bridge.onrender.com/update-sign', {
