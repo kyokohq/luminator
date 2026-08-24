@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luminator ODK4 & IPS Suite - Secure Terminal</title>
+    <title>Luminator ODK4 & IPS Suite</title>
     <style>
         body {
             background-color: #121212;
@@ -336,21 +336,7 @@
 </head>
 <body>
 
-    <h2 id="mainHeading">Secure Terminal Authentication</h2>
-
-    <!-- LOGIN SCREEN -->
-    <div id="loginOverlay" class="auth-overlay">
-        <div class="auth-group">
-            <label>Username</label>
-            <input type="text" id="userInput" autocomplete="off">
-        </div>
-        <div class="auth-group">
-            <label>Password</label>
-            <input type="password" id="passInput">
-        </div>
-        <div class="error-msg" id="loginError">Access Denied.</div>
-        <button class="tab-btn active" onclick="handleLogin()" style="margin-top: 10px;">Log In</button>
-    </div>
+    <h2 id="mainHeading">Luminator ODK4 & IPS Suite</h2>
 
     <!-- IPS PASSWORD GATE (PRIVATE) -->
     <div id="ipsPasswordGate" class="auth-overlay" style="display:none;">
@@ -364,7 +350,7 @@
     </div>
 
     <!-- MAIN APP CONTAINER -->
-    <div id="appContainer">
+    <div id="appContainer" style="display: flex;">
         <div class="nav-tabs">
             <button class="tab-btn active" onclick="switchView('generator')">Manual Generator</button>
             <button class="tab-btn" onclick="switchView('mcu')">ODK4 Controller</button>
@@ -468,26 +454,13 @@
     </div>
 
     <script>
-        function handleLogin() {
-            const u = document.getElementById('userInput').value.trim();
-            const p = document.getElementById('passInput').value.trim();
-            const err = document.getElementById('loginError');
-
-            if (u === 'piercesn' && p === 'luminator2026') {
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('appContainer').style.display = 'flex';
-                document.getElementById('mainHeading').innerText = "Luminator ODK4 & IPS Suite";
-            } else {
-                err.style.display = 'block';
-            }
-        }
-
         let ipsUnlocked = false;
 
         function switchView(viewName) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
             document.getElementById('ipsPasswordGate').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
 
             if (viewName === 'generator') {
                 document.querySelectorAll('.tab-btn')[0].classList.add('active');
@@ -499,6 +472,7 @@
             } else if (viewName === 'ips') {
                 document.querySelectorAll('.tab-btn')[2].classList.add('active');
                 if (!ipsUnlocked) {
+                    document.getElementById('appContainer').style.display = 'none';
                     document.getElementById('ipsPasswordGate').style.display = 'flex';
                 } else {
                     document.getElementById('ipsView').classList.add('active');
@@ -513,6 +487,7 @@
             if (pass === 'luminator2026') {
                 ipsUnlocked = true;
                 document.getElementById('ipsPasswordGate').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'flex';
                 document.getElementById('ipsView').classList.add('active');
                 renderIPSTable();
             } else {
@@ -670,7 +645,7 @@
                     <button class="softkey" onclick="gotoScreen('destb_input')">DestB</button>
                 `;
             } else if (currentScreen === 'menu') {
-                screen.innerHTML = `Pref... Driver preference options\nDimng... Adjust Quantum dimming\nConfg... Access Configuration\nStat... Access Status screens\nCancl... Return to previous`;
+                screen.innerHTML = `Pref... Driver preference options\nDimng... Adjust Quantum dimning\nConfg... Access Configuration\nStat... Access Status screens\nCancl... Return to previous`;
                 softkeys.innerHTML = `
                     <button class="softkey" onclick="gotoScreen('default')">Pref</button>
                     <button class="softkey" onclick="gotoScreen('default')">Dimng</button>
