@@ -33,7 +33,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            width: 320px;
+            width: 300px;
         }
 
         .auth-group {
@@ -338,7 +338,7 @@
 
     <h2 id="mainHeading">Luminator ODK4 & IPS Suite</h2>
 
-    <!-- IPS PASSKEY & PASSWORD GATE -->
+    <!-- IPS PRIVATE PASSWORD GATE -->
     <div id="ipsPasswordGate" class="auth-overlay" style="display:none;">
         <p style="font-size:12px; color:#aaa; margin:0;">🔒 Restricted Access: IPS Programming Suite</p>
         <div class="auth-group">
@@ -346,12 +346,7 @@
             <input type="password" id="ipsPassInput">
         </div>
         <div class="error-msg" id="ipsError">Incorrect Password.</div>
-        <button class="tab-btn active" onclick="verifyIPSPassword()" style="margin-top: 5px;">Authorize with Password</button>
-        
-        <hr style="border-color: #333; width:100%; margin: 5px 0;">
-        
-        <button class="tab-btn" style="background:#2563eb; color:white;" onclick="authenticatePasskey()">🔐 Sign in with Passkey</button>
-        <button class="tab-btn" style="background:#4b5563; color:white;" onclick="registerPasskey()">➕ Register New Passkey</button>
+        <button class="tab-btn active" onclick="verifyIPSPassword()" style="margin-top: 10px;">Authorize</button>
     </div>
 
     <!-- MAIN APP CONTAINER -->
@@ -497,74 +492,6 @@
                 renderIPSTable();
             } else {
                 err.style.display = 'block';
-            }
-        }
-
-        // WebAuthn Passkey Registration & Authentication Logic
-        async function registerPasskey() {
-            if (!window.PublicKeyCredential) {
-                alert("WebAuthn is not supported by your browser.");
-                return;
-            }
-            try {
-                const challenge = new Uint8Array(32);
-                window.crypto.getRandomValues(challenge);
-                const userId = new Uint8Array(16);
-                window.crypto.getRandomValues(userId);
-
-                const options = {
-                    publicKey: {
-                        challenge: challenge,
-                        rp: { name: "Kris Transit IPS", id: window.location.hostname || "localhost" },
-                        user: { id: userId, name: "ips_admin", displayName: "IPS Admin" },
-                        pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
-                        authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "preferred", requireResidentKey: true },
-                        timeout: 60000
-                    }
-                };
-
-                const credential = await navigator.credentials.create(options);
-                const credentialIdB64 = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
-                localStorage.setItem('ips_passkey_id', credentialIdB64);
-                alert("Passkey successfully created and registered on your device!");
-            } catch (err) {
-                console.error("Passkey creation error:", err);
-                alert("Passkey registration cancelled or failed.");
-            }
-        }
-
-        async function authenticatePasskey() {
-            const storedId = localStorage.getItem('ips_passkey_id');
-            if (!storedId) {
-                alert("No passkey found on this device. Please click 'Register New Passkey' first.");
-                return;
-            }
-            try {
-                const challenge = new Uint8Array(32);
-                window.crypto.getRandomValues(challenge);
-                const binaryId = Uint8Array.from(atob(storedId), c => c.charCodeAt(0));
-
-                const options = {
-                    publicKey: {
-                        challenge: challenge,
-                        timeout: 60000,
-                        rpId: window.location.hostname || "localhost",
-                        allowCredentials: [{ id: binaryId, type: 'public-key', transports: ['internal'] }],
-                        userVerification: 'preferred'
-                    }
-                };
-
-                const assertion = await navigator.credentials.get(options);
-                if (assertion) {
-                    ipsUnlocked = true;
-                    document.getElementById('ipsPasswordGate').style.display = 'none';
-                    document.getElementById('appContainer').style.display = 'flex';
-                    document.getElementById('ipsView').classList.add('active');
-                    renderIPSTable();
-                }
-            } catch (err) {
-                console.error("Passkey assertion error:", err);
-                alert("Passkey authentication failed or cancelled.");
             }
         }
 
