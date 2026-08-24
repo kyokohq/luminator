@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luminator ODK4 & IPS Suite - Secure DB</title>
+    <title>Luminator ODK4 & IPS Suite - Secure Terminal</title>
     <style>
         body {
             background-color: #121212;
@@ -24,7 +24,6 @@
             letter-spacing: 1px;
         }
 
-        /* Generic Overlay Styling (Login & IPS Lock) */
         .auth-overlay {
             background: #1a1a1a;
             border: 2px solid #333;
@@ -337,31 +336,31 @@
 </head>
 <body>
 
-    <h2 id="mainHeading">Luminator System Authentication</h2>
+    <h2 id="mainHeading">Secure Terminal Authentication</h2>
 
     <!-- LOGIN SCREEN -->
     <div id="loginOverlay" class="auth-overlay">
         <div class="auth-group">
             <label>Username</label>
-            <input type="text" id="userInput" placeholder="piercesn">
+            <input type="text" id="userInput" autocomplete="off">
         </div>
         <div class="auth-group">
             <label>Password</label>
-            <input type="password" id="passInput" placeholder="luminator2026">
+            <input type="password" id="passInput">
         </div>
-        <div class="error-msg" id="loginError">Invalid credentials. Use piercesn / luminator2026</div>
+        <div class="error-msg" id="loginError">Access Denied.</div>
         <button class="tab-btn active" onclick="handleLogin()" style="margin-top: 10px;">Log In</button>
     </div>
 
-    <!-- IPS PASSWORD GATE -->
+    <!-- IPS PASSWORD GATE (PRIVATE) -->
     <div id="ipsPasswordGate" class="auth-overlay" style="display:none;">
-        <p style="font-size:12px; color:#aaa; margin:0;">🔒 IPS Programming Software is password protected.</p>
+        <p style="font-size:12px; color:#aaa; margin:0;">🔒 Restricted Access: IPS Programming Suite</p>
         <div class="auth-group">
-            <label>IPS Security Code</label>
-            <input type="password" id="ipsPassInput" placeholder="Enter password (luminator)">
+            <label>Security Password</label>
+            <input type="password" id="ipsPassInput">
         </div>
-        <div class="error-msg" id="ipsError">Incorrect IPS password.</div>
-        <button class="tab-btn active" onclick="verifyIPSPassword()" style="margin-top: 10px;">Unlock IPS</button>
+        <div class="error-msg" id="ipsError">Incorrect Password.</div>
+        <button class="tab-btn active" onclick="verifyIPSPassword()" style="margin-top: 10px;">Authorize</button>
     </div>
 
     <!-- MAIN APP CONTAINER -->
@@ -381,15 +380,15 @@
                 </div>
                 <div class="control-group">
                     <label>Route</label>
-                    <input type="text" id="leftVal" value="90">
+                    <input type="text" id="leftVal" value="93">
                 </div>
                 <div class="control-group">
                     <label>Top Text</label>
-                    <input type="text" id="topVal" value="PLYMOUTH">
+                    <input type="text" id="topVal" value="KRIS TRANSIT">
                 </div>
                 <div class="control-group">
                     <label>Bottom Text</label>
-                    <input type="text" id="bottomVal" value="MEETING MALL">
+                    <input type="text" id="bottomVal" value="SYSTEM">
                 </div>
                 <div class="control-group" style="align-self: flex-end;">
                     <button class="tab-btn" style="background:#ff7700; color:white;" onclick="sendSignData(document.getElementById('leftVal').value, document.getElementById('topVal').value, document.getElementById('bottomVal').value)">Send to Bus</button>
@@ -402,7 +401,7 @@
             <div class="mcu-housing">
                 <div class="mcu-screen-area">
                     <div class="mcu-screen-body" id="mcuScreenContent">
-                        ROCK BL.
+                        KRIS TRANSIT
                     </div>
                     <div class="mcu-softkeys" id="mcuSoftkeysContainer">
                         <button class="softkey" onclick="handleSoftkey(0)">Menu</button>
@@ -437,17 +436,17 @@
         <div id="ipsView" class="view-container">
             <div class="ips-window">
                 <div class="ips-titlebar">
-                    <span>Luminator Integrated Programming Software (IPS 3.2) - [Agency_Database.mtu]</span>
+                    <span>Luminator Integrated Programming Software (IPS 3.2) - [Kris_Transit_Whistler.mtu]</span>
                     <span>[_][ ] [X]</span>
                 </div>
                 <div class="ips-body">
                     <div class="ips-toolbar">
-                        <button class="ips-btn" onclick="addNewRoute()">+ Add Route</button>
+                        <button class="ips-btn" onclick="addNewRoute()">+ Add Code</button>
                         <button class="ips-btn" onclick="saveIPSDatabase()">Save Database to ODK Database</button>
-                        <button class="ips-btn" onclick="alert('Exported to simulated USB: /odkMsgdb/msg0b_001.mtu')">Export .MTU to USB</button>
+                        <button class="ips-btn" onclick="alert('Exported to simulated USB: /odkMsgdb/kris_transit.mtu')">Export .MTU to USB</button>
                     </div>
                     <div>
-                        <strong>Route & Message Database Listing (Editable DB)</strong>
+                        <strong>Route & P/R Message Database Listing (Editable DB)</strong>
                         <table class="ips-table" style="margin-top: 8px;">
                             <thead>
                                 <tr>
@@ -511,7 +510,7 @@
         function verifyIPSPassword() {
             const pass = document.getElementById('ipsPassInput').value.trim();
             const err = document.getElementById('ipsError');
-            if (pass === 'luminator') {
+            if (pass === 'luminator2026') {
                 ipsUnlocked = true;
                 document.getElementById('ipsPasswordGate').style.display = 'none';
                 document.getElementById('ipsView').classList.add('active');
@@ -521,18 +520,59 @@
             }
         }
 
-        // Persistent Database via localStorage
+        // Kris Transit Whistler & Standard Database
         let defaultDatabase = {
-            "90": { route: "90", top: "PLYMOUTH", bottom: "MEETING MALL" },
-            "1": { route: "1", top: "DOWNTOWN", bottom: "EXPRESS" },
-            "42": { route: "42", top: "UNIVERSITY", bottom: "CAMPUS LOOP" },
-            "00": { route: "00", top: "OUT OF", bottom: "SERVICE" }
+            "1": { route: "1", top: "NIS", bottom: "NOT IN SERVICE" },
+            "2": { route: "2", top: "SPECIAL", bottom: "SERVICE" },
+            "3": { route: "3", top: "TRAINING", bottom: "BUS" },
+            "4": { route: "4", top: "CHARTER", bottom: "SERVICE" },
+            "5": { route: "5", top: "KT TRANSIT", bottom: "SYSTEM" },
+            "6": { route: "6", top: "SHUTTLE", bottom: "BUS" },
+            "90": { route: "90", top: "OVERLOAD", bottom: "TO VILLAGE" },
+            "91": { route: "91", top: "OVERLOAD", bottom: "TO WHISTLER CREEK" },
+            "92": { route: "92", top: "OVERLOAD", bottom: "TO MEADOW PARK" },
+            "93": { route: "93", top: "KRIS TRANSIT", bottom: "SYSTEM" },
+            "04": { route: "4", top: "MARKETPLACE", bottom: "FREE SHUTTLE" },
+            "05": { route: "5", top: "UPPER VILLAGE", bottom: "BENCHLANDS SHUTTLE" },
+            "06": { route: "6", top: "TAPLEY'S", bottom: "BLUEBERRY" },
+            "07": { route: "7", top: "STAFF", bottom: "HOUSING" },
+            "08": { route: "8", top: "LOST LAKE", bottom: "FREE SHUTTLE" },
+            "101": { route: "10", top: "CHEAKAMUS", bottom: "VALLEY EXPRESS" },
+            "102": { route: "10", top: "CHEAKAMUS", bottom: "VIA MILLAR CREEK" },
+            "103": { route: "10", top: "EMERALD", bottom: "VALLEY EXPRESS" },
+            "104": { route: "10", top: "EMERALD", bottom: "VIA MILLAR CREEK" },
+            "201": { route: "20", top: "CHEAKAMUS", bottom: "LOCAL" },
+            "202": { route: "20", top: "CHEAKAMUS", bottom: "VIA FUNCTION JCT" },
+            "203": { route: "20", top: "TO VILLAGE", bottom: "DIRECT" },
+            "204": { route: "20", top: "TO VILLAGE", bottom: "VIA FUNCTION JCT" },
+            "211": { route: "21", top: "SPRING CREEK", bottom: "ROUTE" },
+            "212": { route: "21", top: "TO VILLAGE", bottom: "VIA SPRING CREEK" },
+            "251": { route: "25", top: "WHISTLER CREEK", bottom: "LOCAL" },
+            "252": { route: "25", top: "TO VILLAGE", bottom: "VIA CREEK" },
+            "301": { route: "30", top: "EMERALD", bottom: "VIA NESTERS" },
+            "302": { route: "30", top: "TO VILLAGE", bottom: "VIA NESTERS" },
+            "303": { route: "30", top: "ALPINE/EMERALD", bottom: "VIA NESTERS" },
+            "304": { route: "30", top: "TO VILLAGE", bottom: "VIA ALPINE" },
+            "311": { route: "31", top: "ALPINE", bottom: "VIA NESTERS" },
+            "312": { route: "31", top: "TO VILLAGE", bottom: "VIA ALPINE" },
+            "313": { route: "31", top: "TO MEADOW PARK", bottom: "VIA NESTERS" },
+            "321": { route: "32", top: "EMERALD", bottom: "VIA SPRUCE GROVE" },
+            "322": { route: "32", top: "TO VILLAGE", bottom: "VIA SPRUCE GROVE" },
+            "331": { route: "33", top: "ALPINE", bottom: "VIA SPRUCE GROVE" },
+            "332": { route: "33", top: "TO VILLAGE", bottom: "VIA SPRUCE GROVE" },
+            "20X1": { route: "20X", top: "CHEAKAMUS EXP", bottom: "EXPRESS" },
+            "20X2": { route: "20X", top: "TO VILLAGE", bottom: "EXPRESS" },
+            "25X1": { route: "25X", top: "WHISTLER CREEK", bottom: "EXPRESS" },
+            "25X2": { route: "25X", top: "TO VILLAGE", bottom: "EXPRESS" },
+            "991": { route: "99", top: "COMMUTER", bottom: "TO PEMBERTON" },
+            "992": { route: "99", top: "COMMUTER", bottom: "TO WHISTLER" },
+            "100": { route: "100", top: "PEMBERTON", bottom: "LOCAL" }
         };
 
-        let routeDatabase = JSON.parse(localStorage.getItem('luminator_db')) || defaultDatabase;
+        let routeDatabase = JSON.parse(localStorage.getItem('kris_transit_db')) || defaultDatabase;
 
         function syncDatabase() {
-            localStorage.setItem('luminator_db', JSON.stringify(routeDatabase));
+            localStorage.setItem('kris_transit_db', JSON.stringify(routeDatabase));
         }
 
         function renderIPSTable() {
@@ -553,9 +593,9 @@
         }
 
         function addNewRoute() {
-            let newCode = prompt("Enter new Code ID (e.g., 50):");
+            let newCode = prompt("Enter new Code ID:");
             if (!newCode) return;
-            routeDatabase[newCode] = { route: newCode, top: "NEW DESTINATION", bottom: "VIA EXPRESS" };
+            routeDatabase[newCode] = { route: "40", top: "NEW ROUTE", bottom: "DESTINATION" };
             syncDatabase();
             renderIPSTable();
         }
@@ -583,18 +623,36 @@
 
         function saveIPSDatabase() {
             syncDatabase();
-            alert("Database successfully compiled, saved, and synced to ODK4 controller memory!");
+            alert("Kris Transit Database compiled, saved, and synced to ODK4 controller memory!");
         }
 
         // ODK4 Controller Runtime Logic
         let currentScreen = 'default';
-        let inputBuffer = "1";
-        let currentRoute = { route: "90", top: "PLYMOUTH", bottom: "MEETING MALL" };
+        let inputBuffer = "93";
+        let currentRoute = { route: "93", top: "KRIS TRANSIT", bottom: "SYSTEM" };
         let prCycleInterval = null;
 
         const prDatabase = {
-            "1": { top: "PUBLIC WORKS", bottom: "WEEK" },
-            "2": { top: "HAPPY HOLIDAYS", bottom: "RIDE SAFELY" }
+            "1": { top: "SORRY BUS FULL", bottom: "SPECIAL NOTICE" },
+            "2": { top: "OVERLOAD", bottom: "SPECIAL NOTICE" },
+            "3": { top: "DROP OFF ONLY", bottom: "SPECIAL NOTICE" },
+            "4": { top: "PICK UP ONLY", bottom: "SPECIAL NOTICE" },
+            "5": { top: "EXPRESS", bottom: "SPECIAL NOTICE" },
+            "6": { top: "ON DETOUR", bottom: "SPECIAL NOTICE" },
+            "7": { top: "WELCOME ABOARD", bottom: "KRIS TRANSIT" },
+            "8": { top: "HAVE A NICE DAY", bottom: "KRIS TRANSIT" },
+            "9": { top: "RIDE THE BUS!", bottom: "KRIS TRANSIT" },
+            "10": { top: "RIDE FOR FREE!", bottom: "SPECIAL NOTICE" },
+            "11": { top: "RIDE FREE TODAY!", bottom: "SPECIAL NOTICE" },
+            "12": { top: "HAPPY CANADA DAY", bottom: "KRIS TRANSIT" },
+            "13": { top: "HAPPY HOLIDAYS", bottom: "KRIS TRANSIT" },
+            "14": { top: "LET IT SNOW", bottom: "WHISTLER RESORT" },
+            "15": { top: "LEST WE FORGET", bottom: "REMEMBRANCE DAY" },
+            "16": { top: "SPECIAL EVENT", bottom: "SHUTTLE" },
+            "17": { top: "POWERED BY CNG", bottom: "CLEAN AIR" },
+            "18": { top: "WE'RE HIRING", bottom: "JOIN OUR TEAM" },
+            "19": { top: "ELECTRIC BUS", bottom: "ZERO EMISSION" },
+            "20": { top: "AMBER ALERT", bottom: "CHECK LOCAL NEWS" }
         };
 
         function renderScreen() {
@@ -667,7 +725,7 @@
 
         function gotoScreen(screen) {
             currentScreen = screen;
-            inputBuffer = "1";
+            inputBuffer = "";
             renderScreen();
         }
 
@@ -692,7 +750,7 @@
                     sendSignData(data.route, data.top, data.bottom);
                     gotoScreen('default');
                 } else if (currentScreen === 'pr_input') {
-                    const prData = prDatabase[inputBuffer] || { top: "PUBLIC WORKS", bottom: "WEEK" };
+                    const prData = prDatabase[inputBuffer] || { top: "SPECIAL NOTICE", bottom: "NOTICE" };
                     if (prCycleInterval) clearInterval(prCycleInterval);
                     let toggle = false;
                     prCycleInterval = setInterval(() => {
